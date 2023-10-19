@@ -50,7 +50,7 @@ locations: tops, insides
 tops: countertop, stovetop -> may be better to not spewcify and just have tops always open
 insides: drawers, cabinets
 
-occupied-sugar ?locations
+occupied-sugar ?locations -> can I combine these into a single occupied predicate? how to indicate goal state then?
 occupied-spam ?locations
 closed ?insides
 

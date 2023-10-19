@@ -1,0 +1,44 @@
+(define
+    (domain kitchen)
+    (:types
+        location thing - object
+        sugar spam - thing
+        stovetop countertop cabinet drawer - location
+    )
+
+    (:predicates
+        (occupied ?l - location)
+        (what-occupied ?l - location ?t - thing)
+        (closed ?l - location)
+    )
+
+    (:action OPEN_DOOR
+        :parameters (?l - location)
+        :precondition (closed ?l)
+        :effect (not (closed ?l))
+    )
+
+    (:action CLOSE_DOOR
+        :parameters (?l - location)
+        :precondition (not (closed ?l))
+        :effect (closed ?l)
+    )
+
+    (:action MOVE_OBJECT
+        :parameters (?l1 - location ?l2 - location ?t - thing)
+        :precondition (and
+            (not (closed ?l1))
+            (not (closed ?l2))
+            (what-occupied ?l1 ?t)
+            (not (occupied ?l2))
+        )
+        :effect (and
+            (not (what-occipied ?l1 ?t))
+            (not (occupied ?l1))
+            (occupied ?l2)
+            (what-occupied ?l2 ?t)
+        )
+    )
+    )
+
+)
