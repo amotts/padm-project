@@ -1,0 +1,59 @@
+You will be given a kitchen environment with a Franka robot manipulator arm. 
+The environment consists of a bunch of drawers, cabinets and countertops. 
+Additionally, there are two boxes: a sugar box and a spam box spawned on a 
+stove top burner and counter top respectively. In this environment, your 
+objectives are to complete two tasks in no particular order,
+
+1. Remove the sugar box from the top of the burner and place it somewhere on 
+the nearby countertop
+2. Stow the spam box inside the red drawer below it.
+
+For this section of the project, you need to design a PDDL domain and problem 
+file. You can learn more about PDDL here. You should think about which 
+predicates, actions and types will be suitable for the given set of tasks.
+
+-----------------------------------------------------------------------------------
+
+Key elements of enviorment:
+
+stovetop burner (x2 [Right, Left])
+- can have object on top of it
+- are there multiple?
+
+counter top (x3 [Right, Center, Left])
+- can have object on top of it
+- are there multiple
+
+drawers (x3 [Red, Blue, Green])
+- can have object inside them
+- can be open or closed
+- multiple exist, labled by color
+    - red drawer underneath counter top that sugar goes on
+
+cabinets (x3 [Right, Center, Left])
+- can have object inside them
+- can be open or closed
+- multiple exist
+
+
+Plan:
+Define each location as being sugar-occupied or spam-occupied
+define each drawer, cabinet as open or closed
+must be open before occupied status can be changed
+Moves are (stovetop -> counter, drawer, cabinet)
+          (counter -> stovetop, drawer, cabinet)
+          (drawer -> counter, stovetop, cabinet)
+          (cabinet -> counter, drawer, stovetop)
+
+Objects: locations, things
+locations: tops, insides
+tops: countertop, stovetop -> may be better to not spewcify and just have tops always open
+insides: drawers, cabinets
+
+occupied-sugar ?locations
+occupied-spam ?locations
+closed ?insides
+
+Actions:
+open insides
+move thing location location
