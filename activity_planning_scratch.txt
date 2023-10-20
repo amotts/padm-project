@@ -57,3 +57,17 @@ closed ?insides
 Actions:
 open insides
 move thing location location
+
+
+UPDATE: Need to add gripper movement 
+Need to track gripper location, if gripper is holding something
+Add actions for moving gripper, grab/release object/door, 
+
+open door -> change door status, gripper must not be occupied
+close door
+grab/object -> must be unoccupied, in same location as object
+release object
+move empty gripper -> any location
+move occupied gripper -> must be occupied, cannot move to loc that is closed or occupied
+
+update goal to include a non occupied gripper
