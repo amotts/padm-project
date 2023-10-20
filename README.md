@@ -5,6 +5,7 @@ Repository for all files relating to the final project for Principles of Autonom
 ## Part 1: Activity Planning 
 
 *On closer inspection of the problem, I believe that it wants to include picking up and putting down the objects. Will need to create predicate for the grasper location and whether the grasper has an object in it*
+
 activity_planning_scratch.txt: document containing scratchwork for determinining structure of PDDL enviornmentt to be created in new file
 
 activity_planning_pddl_domain: establish a kitchen domain with locations and things. Locations include countertops, stovetops, drawers, cabinets. Options for actions are to open or close locations or move object from one location to another
