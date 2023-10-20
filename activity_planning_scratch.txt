@@ -71,3 +71,11 @@ move empty gripper -> any location
 move occupied gripper -> must be occupied, cannot move to loc that is closed or occupied
 
 update goal to include a non occupied gripper
+
+
+
+PLANNER:
+start with a brute force method that calculates at each node all of the possible actions
+and builds tree from there. Find shortest path by exploring the entire tree (proably use bfs
+or the hybrid one that does DFS at a given depth). Then figure out how to implement
+a FF heuristic by removing the delete effects
