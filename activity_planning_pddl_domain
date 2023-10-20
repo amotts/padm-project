@@ -1,5 +1,6 @@
 (define
     (domain kitchen)
+    (:requirements :strip :negative-preconditions)
     (:types
         location thing - object
         sugar spam - thing
