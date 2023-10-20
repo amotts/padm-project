@@ -13,3 +13,5 @@ activity_planning_pddl_problem: establish a problem within a kitchen domain with
 Notes: Currently, multiple actions are offered that would never be needed and are not representative of the real world (e.g. opening or closing a counter or stovetop). Since these predicates should have no bearing on any available actions and would never be on a shortest path to acchieve the goal, I don't expect them to pose any issues. They will increase computational load since they will always be an option to move the gripper to the location and change the state of the door, but I will deal with that issue if it comes up.
 
 **Need to spell check and formatting check domain and problem**
+
+**Next Steps:** Implement a BFS planner using the pddl parser
