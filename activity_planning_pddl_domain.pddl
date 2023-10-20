@@ -1,6 +1,6 @@
 (define
     (domain kitchen)
-    (:requirements :strip :typing :negative-preconditions)
+    (:requirements :strips :typing :negative-preconditions)
     (:types
         gripper location thing - object
         sugar spam - thing
@@ -47,7 +47,6 @@
         :effect(and
         (gripper-occupied ?g)
         (item-held ?g ?t)
-
         )
     )
 
