@@ -42,6 +42,7 @@ release_thing robot r-drawer spam
 
 Works, however will need to implement a dept limiter to prioritize cost amongst those on same level. Currently appears to be choosing cheapest option however 
 since so many options are the same, adds superflous steps. Could either use a cumulative cost function or some sort of depth limiter.
+UPDATE cost+prev_cost did not work. Stopped after several minutes with total costs in the mid 20s.Too computationally intense
 
 """
 ## 
@@ -74,7 +75,7 @@ class Planner:
 
 
         while queue:
-            dummy, queue_head = queue.get()
+            prev_cost, queue_head = queue.get()
             state = queue_head[0]
             path = queue_head[1]
             for action in ground_actions:
