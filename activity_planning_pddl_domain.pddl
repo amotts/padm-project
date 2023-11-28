@@ -23,7 +23,7 @@
             (closed ?l)
             (not(gripper-occupied ?g))
         )
-        :effect (not (closed ?l))
+         :effect (not (closed ?l))
     )
 
     (:action CLOSE_DOOR
@@ -38,7 +38,7 @@
 
     (:action GRAB_THING
         :parameters (?g - gripper ?l - location ?t - thing)
-        :preconditions(and
+        :precondition (and
             (not(closed ?l))
             (what-occupied ?l ?t)
             (gripper-loc ?g ?l )
@@ -52,15 +52,14 @@
 
     (:action RELEASE_THING
         :parameters (?g - gripper ?l - location ?t - thing)
-        :preconditions(and
+        :precondition (and
             (what-occupied ?l ?t)
-            (gripper-loc ?g ?l )
+            (gripper-loc ?g ?l)
             (item-held ?g ?t)
         )
         :effect(and
         (not (gripper-occupied ?g))
-        (not (item held ?g ?t))
-
+        (not (item-held ?g ?t))
         )
     )
 
@@ -72,7 +71,7 @@
             (not (occupied ?l2))
             (what-occupied ?l1 ?t)
             (gripper-loc ?g ?l1)
-            (item held ?g ?t)
+            (item-held ?g ?t)
         )
         :effect (and
             (not (what-occupied ?l1 ?t))

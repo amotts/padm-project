@@ -3,19 +3,11 @@
     (:domain kitchen)
 
     (:objects
-        l-stove - stovetop
-        r-stove - stovetop
-        l-counter - countertop
-        c-counter - countertop
-        r-counter - countertop
-        r-drawer - drawer
-        g-drawer - drawer
-        b-drawer - drawer
-        l-cabinet - cabinet
-        c-cabinet - cabinet
-        r-cabinet - cabinet
-        sugar - thing
-        spam - thing
+        l-stove r-stove - stovetop
+        l-counter c-counter r-counter - countertop
+        r-drawer g-drawer b-drawer - drawer
+        l-cabinet c-cabinet r-cabinet - cabinet
+        sugar spam - thing
         gripper - gripper
     
     )
