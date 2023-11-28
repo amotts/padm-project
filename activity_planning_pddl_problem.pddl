@@ -8,7 +8,7 @@
         r-drawer g-drawer b-drawer - drawer
         l-cabinet c-cabinet r-cabinet - cabinet
         sugar spam - thing
-        gripper - gripper
+        robot - gripper
     
     )
 
@@ -23,13 +23,14 @@
         (occupied c-counter)
         (what-occupied l-stove sugar)
         (what-occupied c-counter spam)
-        (gripper-loc c-counter)
+        (gripper-loc robot c-counter)
+;       (test robot)
     )
 
     (:goal (and
-        (what-occupied ?c-counter ?sugar)
-        (what-occupied ?r-drawer ?spam)
-        (not(gripper-occipied ?gripper))
+        (what-occupied c-counter sugar)
+        (what-occupied r-drawer spam)
+        (not(gripper-occupied robot))
     )
     )
 
