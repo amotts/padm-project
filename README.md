@@ -12,6 +12,9 @@ activity_planning_pddl_problem: establish a problem within a kitchen domain with
 
 Notes: Currently, multiple actions are offered that would never be needed and are not representative of the real world (e.g. opening or closing a counter or stovetop). Since these predicates should have no bearing on any available actions and would never be on a shortest path to acchieve the goal, I don't expect them to pose any issues. They will increase computational load since they will always be an option to move the gripper to the location and change the state of the door, but I will deal with that issue if it comes up.
 
-**Need to spell check and formatting check domain and problem**
+activity_planner_basic: a functional activity planner using a Breadth-First Search method by adding new satisifed actions to the back of the queue. Modeled after the BFS used in pset 1 using syntax from the
+PDDL-parser. Run time is approx 1 sec
+    runs with: python -B -m activity_planner_basic /home/amotts/Documents/MIT_FA23/padm-project/activity_planning_pddl_domain.pddl /home/amotts/Documents/MIT_FA23/padm-project/activity_planning_pddl_problem.pddl
 
-**Next Steps:** Implement a BFS planner using the pddl parser
+activity_planner_best_first: a functioning activity planner using a Best First Search method similar to Pset 2. Cost is calculated by a FF ignorning any delete effects and negative preconditions. However, it currently works worse than the basic BFS since the queue doesn't distinguish well between the many actions that are the same "distance" from the goal. As a result it add superflous actions since they are queued sooner but still accomplish the overall goal. Improvements will either add depth limiting or will change cost function to be a cumulative cost of the path so far by adding up the various actions. Run time is approx 30s
+    runs with: python -B -m activity_planner_best_first /home/amotts/Documents/MIT_FA23/padm-project/activity_planning_pddl_domain.pddl /home/amotts/Documents/MIT_FA23/padm-project/activity_planning_pddl_problem.pddl
