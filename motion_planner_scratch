@@ -2,6 +2,8 @@ Needs:
 
 Credit for reference: Pascal Spino and William B Mitchell
 
+In 6 Degree configuration space. Can used euclidean geometry in 6 dof space. Will NOT mean linear or even necessarily good movement in end-effector space, but for simplicity, will use configuration space only and real world be dammned
+
 - RRT
     - accept a start, goal
     - output a sequence of poses
@@ -41,6 +43,13 @@ Helper func todo:
 
 MOVED ALL RRT FUNCTIONS TO SEPERATE PY FILE
 
+ 
+Borrowed some code to run execution and results:
+Base of robot will need to be driven forward and be know such that the appropriate goal can be established based on robot reference frame. Action looks good. Step size of 0.1 provides jerky but acceptable motion plan.
+
+TODO: - determine what positions are required to get to each action (and base location)
+      - write function to run rrt for each action as it is planned
+      - figure out how to move an object with the arm
 
 
 

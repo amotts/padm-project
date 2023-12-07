@@ -82,6 +82,7 @@ def basic_rrt(start, goal, dist_func, step_func, sample_func, collision_func, go
         else:
             if goal_func(sample_step_node._state, goal):
                 # print(len(nodes))
+                print(map_path(sample_step_node.path())  )
                 return map_path(sample_step_node.path())           
         steps_taken += 1
 
@@ -117,11 +118,11 @@ def get_collision_func(body, joints, obstacles):
         return False
     return(func)
 
-def step_func(state1, state2, step_size = 0.5):
+def step_func(state1, state2, step_size = 0.1):
     #state1 is sample, state2 is closest node
     #linearly scale each component of the vector by the scale factor beyond the step size    
     dist_i = math.sqrt(sum((state1[i]-state2[i])**2 for i in range(len(state1))))
-    if dist_i < step_size: 
+    if dist_i > step_size: 
         new_state = ([(state1[i] - state2[i]) / dist_i * step_size + state2[i] for i in range(len(state2))])
         return(new_state)
     else:
@@ -129,5 +130,5 @@ def step_func(state1, state2, step_size = 0.5):
 
 
 def testFunction():
-    print("Import of functions worked")
+    print("RRT Functions Imported")
     return
