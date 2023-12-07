@@ -30,7 +30,10 @@ Did some file reorganization and upkeep. Removed the repository for the padm-pro
 
 motion_planner_scratch: Planning notes, observations, and performance comments about motion planning files and code
 
-motion_planning_v1: Largely copied off of minimal_example.py. Implimented code for basic rrt including rrt nodes and rrt protocol for basic rrt. After testing, decided to include a percentage of samples to be the goal to speed things along. Included optional goal_function to allow for future flexibility in what is considered reaching the goal. Testing in 2D cartesian form showed over a 60% reduction in number of nodes explored to find goal. TO DO: a lot lol but implement the necessary function using the provided functions for the world
+motion_planning_v1: Largely copied off of minimal_example.py. 
+
+
+rrt_functions.py: Implimented code for basic rrt including rrt nodes and rrt protocol for basic rrt. After testing, decided to include a percentage of samples to be the goal to speed things along. Included optional goal_function to allow for future flexibility in what is considered reaching the goal. Testing in 2D cartesian form showed over a 60% reduction in number of nodes explored to find goal. necessary functions are written but not tested
 
 tests.py: file for creating test cases to test individual function performance:
     Contents:
