@@ -17,7 +17,7 @@ from pybullet_tools.utils import CIRCULAR_LIMITS, get_custom_limits, set_joint_p
 from pybullet_tools.ikfast.franka_panda.ik import PANDA_INFO, FRANKA_URDF
 from pybullet_tools.ikfast.ikfast import get_ik_joints, closest_inverse_kinematics
 
-from pybullet_tools.utils import remove_body, get_joint_positions, get_joint_position, get_bodies, get_body_name, quat_from_euler, create_attachment, plan_cartesian_motion, wait_for_duration, draw_pose, dump_body
+from pybullet_tools.utils import remove_body, get_joint_positions, get_joint_position, get_bodies, get_body_name, quat_from_euler, create_attachment, plan_cartesian_motion, wait_for_duration, draw_pose, dump_body, set_renderer, is_pose_close
 
 from src.world import World
 from src.utils import JOINT_TEMPLATE, BLOCK_SIZES, BLOCK_COLORS, COUNTERS, \
@@ -52,8 +52,11 @@ def map_path(nodes):
 
 def basic_rrt(start, goal, dist_func, step_func, sample_func, collision_func, goal_func, max_steps=500, percent_goal=0.33):
     # Step 1: Check goal and start locations for collisions with obstacles
-    if collision_func(goal)or collision_func(start): 
-        print("Invalid Start of Goal")
+    if collision_func(goal):
+        print("Invalid  Goal")
+        return(None)
+    if collision_func(start): 
+        print("Invalid Start")
         return(None)
     # Step 2:create list of rrt nodes
     nodes = [rrtNode(start, None)]
@@ -127,6 +130,13 @@ def step_func(state1, state2, step_size = 0.1):
         return(new_state)
     else:
         return(state1)
+
+def get_goal_func(body, joints):
+    def func(pose, goal):
+        return(is_pose_close(pose, goal))
+    return(func)
+
+
 
 
 def testFunction():

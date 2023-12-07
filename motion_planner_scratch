@@ -51,6 +51,8 @@ TODO: - determine what positions are required to get to each action (and base lo
       - write function to run rrt for each action as it is planned
       - figure out how to move an object with the arm
 
+Wrote function to drive robot base to certain location with passable graphics. Reccomended start position is [0.75,0.65, np.pi]
+
 
 
 
@@ -59,4 +61,7 @@ Future Thoughts:
 create dictionary of locations and their respective locations and use the second/third/fourth word of input argument to get the targets for each action.
 minimal example uses format of having a get_XXXXX_func to create functions so i guess that must be the best way to do it
 
-Getting into collision with 3? unknown what it is. 0 is kitchen_part_right. 1 is "plane". 2 is world.robot
+Getting into collision with 3? unknown what it is. 0 is kitchen_part_right. 1 is "plane". 2 is world.robot. 3 might be either sugar box or potten meat can1. Unclear whatever they might be it appears need to ignore 3 and 4 and 5 at minimum
+
+
+WTF is a quat? required for many of the built in functions for comparing poses
