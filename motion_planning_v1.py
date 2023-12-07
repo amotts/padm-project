@@ -17,6 +17,8 @@ from pybullet_tools.utils import CIRCULAR_LIMITS, get_custom_limits, set_joint_p
 from pybullet_tools.ikfast.franka_panda.ik import PANDA_INFO, FRANKA_URDF
 from pybullet_tools.ikfast.ikfast import get_ik_joints, closest_inverse_kinematics
 
+from pybullet_tools.utils import remove_body, get_joint_positions, get_joint_position, get_bodies, get_body_name, quat_from_euler, create_attachment, plan_cartesian_motion, wait_for_duration, draw_pose, dump_body
+
 from src.world import World
 from src.utils import JOINT_TEMPLATE, BLOCK_SIZES, BLOCK_COLORS, COUNTERS, \
     ALL_JOINTS, LEFT_CAMERA, CAMERA_MATRIX, CAMERA_POSES, CAMERAS, compute_surface_aabb, \
@@ -51,7 +53,6 @@ def get_sample_fn(body, joints, custom_limits={}, **kwargs):
     return fn
 
 ######################################################################
-# Povided setup above
 # RRT base code below
 #####################################################################
 
@@ -107,14 +108,58 @@ def basic_rrt(start, goal, dist_func, step_func, sample_func, collision_func, go
         else:
             if goal_func(sample_step_node._state, goal):
                 # print(len(nodes))
-                return map_path(sample_step_node.path())
-
-            
+                return map_path(sample_step_node.path())           
         steps_taken += 1
 
     #if solution is not found within limit of steps
     print("Failed: Solution not found within step limit")
     return(None)
+
+#####################################################################
+# Required RRT helper functions
+####################################################################
+
+def get_sample_func(body, joints, custom_limits={}, **kwargs): # provided in limited example
+    lower_limits, upper_limits = get_custom_limits(body, joints, custom_limits, circular_limits=CIRCULAR_LIMITS)
+    generator = interval_generator(lower_limits, upper_limits, **kwargs)
+    def fn():
+        return tuple(next(generator))
+    return fn
+
+
+def get_dist_func(body, joints):
+    def func(state1, state2):
+        # take geometric distance in n dimension where n is length of state vectors
+        return(math.sqrt(sum((state1[i]-state2[i])**2 for i in range(len(state1)))))
+    return(func)
+
+def get_collision_func(body, joints, obstacles):
+    def func(state):
+        set_joint_positions(body, joints, state) #set the position to be at state
+        for obstacle in obstacles:
+            if pairwise_collision(body,obstacle): # check if body has hit any obstacles
+                print("I hit ", obstacle, get_body_name(obstacle))
+                return True
+        return False
+    return(func)
+
+def step_func(state1, state2, step_size = 0.5):
+    #state1 is sample, state2 is closest node
+    #linearly scale each component of the vector by the scale factor beyond the step size    
+    dist_i = math.sqrt(sum((state1[i]-state2[i])**2 for i in range(len(state1))))
+    if dist_i < step_size: 
+        new_state = ([(state1[i] - state2[i]) / dist_i * step_size + state2[i] for i in range(len(state2))])
+        return(new_state)
+    else:
+        return(state1)
+
+
+
+
+
+
+
+
 
 
 
@@ -156,9 +201,30 @@ def main():
                 break
             set_joint_positions(world.robot, ik_joints, conf)
     print("Going to operate the base without collision checking")
+
+    obstacles = []
+    for b in get_bodies():
+        if world.robot != b: # and b!= 5 and b!= 4:
+            obstacles.append(b)
+        # obstacles.append(b)
+    print(obstacles)
+
     for i in range(100):
-        goal_pos = translate_linearly(world, 0.01) # does not do any collision checking!!
+        goal_pos = translate_linearly(world, 0.025) # does not do any collision checking!!
         set_joint_positions(world.robot, world.base_joints, goal_pos)
+
+
+        for obstacle in obstacles:
+            print(get_body_name(obstacle), get_body_name(obstacle))
+            if pairwise_collision(world.robot,obstacle): # check if body has hit any obstacles
+                print("I hit ", obstacle, )
+                print(get_body_name(obstacle))
+                
+
+
+
+
+
         if (i % 30 == 0):
             wait_for_user()
     wait_for_user()
