@@ -1,0 +1,19 @@
+Needs:
+- RRT
+    - accept a start, goal
+    - output a sequence of poses
+    - detects collisions
+    - find closest node
+    - takes step
+    - finds random point
+    - cuttoff point -> failed
+
+    Steps
+    1) check goal and start locations for collisions with obstacles via collision function
+    2) create list of rrt nodes
+    3) limiting loop for number of iterations until fail
+    4) take sample point
+    5) find nearest node by using argmin of distance function
+    6) get point step distance along line
+    7) check point for collision with collision function
+    8) if no collision: add to queue and check if is goal state. if so return path
