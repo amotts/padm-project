@@ -39,7 +39,7 @@ Helper func todo:
     # goal_func - default to not needing
 
 
-
+MOVED ALL RRT FUNCTIONS TO SEPERATE PY FILE
 
 
 

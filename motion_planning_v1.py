@@ -8,6 +8,7 @@ import math
 import subprocess
 import ast
 from random import random
+from rrt_functions import *
 
 sys.path.extend(os.path.abspath(os.path.join(os.getcwd(), d)) for d in ['pddlstream', 'ss-pybullet'])
 
@@ -52,106 +53,6 @@ def get_sample_fn(body, joints, custom_limits={}, **kwargs):
         return tuple(next(generator))
     return fn
 
-######################################################################
-# RRT base code below
-#####################################################################
-
-class rrtNode(object):
-
-    def __init__(self, state, parent):
-        self._parent = parent
-        self._state = state
-
-
-    def path(self):
-        sequence = []
-        node = self
-        while node is not None:
-            sequence.append(node)
-            node = node._parent
-        return sequence[::-1]
-
-def map_path(nodes):
-    return list(map(lambda n: n._state, nodes))
-
-
-
-def basic_rrt(start, goal, dist_func, step_func, sample_func, collision_func, goal_func, max_steps=500, percent_goal=0.33):
-    # Step 1: Check goal and start locations for collisions with obstacles
-    if collision_func(goal)or collision_func(start): 
-        print("Invalid Start of Goal")
-        return(None)
-    # Step 2:create list of rrt nodes
-    nodes = [rrtNode(start, None)]
-    # Step 3: Create limiting loop for number steps taken before declaring failure
-    steps_taken=0
-    while steps_taken < max_steps:
-        # Step 4: Get sample point
-        r = random()
-        if r < percent_goal:
-            sample_point = goal
-        else:
-            sample_point = sample_func()
-        # Step 5: Find nearest node by using argmin of distance function
-        closest = nodes[np.argmin([dist_func(n._state, sample_point) for n in nodes])]
-        # Step 6: get point step distance along line
-        sample_step = step_func(sample_point, closest._state)
-        # Step7: check point for collision with collision function
-        if collision_func(sample_step):
-            continue
-        # Step 8: add to queue and check if is goal state. if so return path
-        sample_step_node = rrtNode(sample_step, closest)
-        nodes.append(sample_step_node)
-        if goal_func == None:
-            if sample_step_node._state == goal:
-                return map_path(sample_step_node.path())
-        else:
-            if goal_func(sample_step_node._state, goal):
-                # print(len(nodes))
-                return map_path(sample_step_node.path())           
-        steps_taken += 1
-
-    #if solution is not found within limit of steps
-    print("Failed: Solution not found within step limit")
-    return(None)
-
-#####################################################################
-# Required RRT helper functions
-####################################################################
-
-def get_sample_func(body, joints, custom_limits={}, **kwargs): # provided in limited example
-    lower_limits, upper_limits = get_custom_limits(body, joints, custom_limits, circular_limits=CIRCULAR_LIMITS)
-    generator = interval_generator(lower_limits, upper_limits, **kwargs)
-    def fn():
-        return tuple(next(generator))
-    return fn
-
-
-def get_dist_func(body, joints):
-    def func(state1, state2):
-        # take geometric distance in n dimension where n is length of state vectors
-        return(math.sqrt(sum((state1[i]-state2[i])**2 for i in range(len(state1)))))
-    return(func)
-
-def get_collision_func(body, joints, obstacles):
-    def func(state):
-        set_joint_positions(body, joints, state) #set the position to be at state
-        for obstacle in obstacles:
-            if pairwise_collision(body,obstacle): # check if body has hit any obstacles
-                print("I hit ", obstacle, get_body_name(obstacle))
-                return True
-        return False
-    return(func)
-
-def step_func(state1, state2, step_size = 0.5):
-    #state1 is sample, state2 is closest node
-    #linearly scale each component of the vector by the scale factor beyond the step size    
-    dist_i = math.sqrt(sum((state1[i]-state2[i])**2 for i in range(len(state1))))
-    if dist_i < step_size: 
-        new_state = ([(state1[i] - state2[i]) / dist_i * step_size + state2[i] for i in range(len(state2))])
-        return(new_state)
-    else:
-        return(state1)
 
 
 
@@ -172,6 +73,7 @@ def step_func(state1, state2, step_size = 0.5):
 def main():
     print('Random seed:', get_random_seed())
     print('Numpy seed:', get_numpy_seed())
+    testFunction()
 
     np.set_printoptions(precision=3, suppress=True)
     world = World(use_gui=True)
