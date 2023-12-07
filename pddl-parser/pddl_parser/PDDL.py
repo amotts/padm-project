@@ -31,7 +31,7 @@ class PDDL_Parser:
     def scan_tokens(self, filename):
         with open(filename) as f:
             # Remove single line comments
-            str = re.sub(r';.*', '', f.read(), flags=re.MULTILINE).lower()
+            str = re.sub(r';.*$', '', f.read(), flags=re.MULTILINE).lower()
         # Tokenize
         stack = []
         list = []
@@ -61,7 +61,7 @@ class PDDL_Parser:
     def parse_domain(self, domain_filename, requirements=SUPPORTED_REQUIREMENTS):
         tokens = self.scan_tokens(domain_filename)
         if type(tokens) is list and tokens.pop(0) == 'define':
-            self.domain_name = None
+            self.domain_name = 'unknown'
             self.requirements = []
             self.types = {}
             self.objects = {}
@@ -162,7 +162,7 @@ class PDDL_Parser:
 
     def parse_action(self, group):
         name = group.pop(0)
-        if type(name) is not str:
+        if not type(name) is str:
             raise Exception('Action without name definition')
         for act in self.actions:
             if act.name == name:
@@ -176,7 +176,7 @@ class PDDL_Parser:
         while group:
             t = group.pop(0)
             if t == ':parameters':
-                if type(group) is not list:
+                if not type(group) is list:
                     raise Exception('Error with ' + name + ' parameters')
                 parameters = []
                 untyped_parameters = []
@@ -218,7 +218,7 @@ class PDDL_Parser:
             return frozenset([tuple(t) for t in data])
         tokens = self.scan_tokens(problem_filename)
         if type(tokens) is list and tokens.pop(0) == 'define':
-            self.problem_name = None
+            self.problem_name = 'unknown'
             self.state = frozenset()
             self.positive_goals = frozenset()
             self.negative_goals = frozenset()
@@ -254,7 +254,7 @@ class PDDL_Parser:
     # -----------------------------------------------
 
     def split_predicates(self, group, positive, negative, name, part):
-        if type(group) is not list:
+        if not type(group) is list:
             raise Exception('Error with ' + name + part)
         if group:
             if group[0] == 'and':
@@ -285,11 +285,11 @@ if __name__ == '__main__':
     print('----------------------------')
     parser.parse_domain(domain)
     parser.parse_problem(problem)
-    print('Domain name: ' + str(parser.domain_name))
+    print('Domain name: ' + parser.domain_name)
     for act in parser.actions:
         print(act)
     print('----------------------------')
-    print('Problem name: ' + str(parser.problem_name))
+    print('Problem name: ' + parser.problem_name)
     print('Objects: ' + str(parser.objects))
     print('State: ' + str([list(i) for i in parser.state]))
     print('Positive goals: ' + str([list(i) for i in parser.positive_goals]))
