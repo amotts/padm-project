@@ -51,7 +51,7 @@ TODO: - determine what positions are required to get to each action (and base lo
       - write function to run rrt for each action as it is planned
       - figure out how to move an object with the arm
 
-Wrote function to drive robot base to certain location with passable graphics. Reccomended start position is [0.75,0.65, np.pi]
+Wrote function to drive robot base to certain location with passable graphics. Reccomended start position is [0.75,0.65, np.pi]. Also added dictionary with the goal poses so a list of actions can be used to run a series of actions. In the future plan to parse the activity planner output for the first, second, etc. The first word being the action can be directed at different actions, with the second and beyond telling which of the goals to use
 
 
 
