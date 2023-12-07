@@ -6,18 +6,22 @@ Repository for all files relating to the final project for Principles of Autonom
 
 activity_planning_scratch.txt: document containing scratchwork for determinining structure of PDDL enviornmentt to be created in new file
 
-activity_planning_pddl_domain: establish a kitchen domain with locations and things. Locations include countertops, stovetops, drawers, cabinets. Options for actions are to open or close locations or move object from one location to another
+pddl_domain: establish a kitchen domain with locations and things. Locations include countertops, stovetops, drawers, cabinets. Options for actions are to open or close locations or move object from one location to another
 
-activity_planning_pddl_problem: establish a problem within a kitchen domain with two stoves, 3 counters, 3 cabinets, and 3 drawers, and a gripper. All closeable locations are closed. Goal is occupy counter with sugar and red drawer with spam and have an empty gripper.
+pddl_problem: establish a problem within a kitchen domain with two stoves, 3 counters, 3 cabinets, and 3 drawers, and a gripper. All closeable locations are closed. Goal is occupy counter with sugar and red drawer with spam and have an empty gripper.
+
+pddl_problem_simple: simple version of the pddl problem but with only one stove, counter, cabinet, and drawer, to better model the kitchen provided
 
 Notes: Currently, multiple actions are offered that would never be needed and are not representative of the real world (e.g. opening or closing a counter or stovetop). Since these predicates should have no bearing on any available actions and would never be on a shortest path to acchieve the goal, I don't expect them to pose any issues. They will increase computational load since they will always be an option to move the gripper to the location and change the state of the door, but I will deal with that issue if it comes up.
 
+My domain and planner are capable of working with an infinite number of objects to be moved as well as a infinite number of cabinets, stovetops, counters, and drawers. However since the example kitchen appears to only have one, I created a simplified problem for use with the simulator
+
 activity_planner_basic: a functional activity planner using a Breadth-First Search method by adding new satisifed actions to the back of the queue. Modeled after the BFS used in pset 1 using syntax from the
 PDDL-parser. Run time is approx 1 sec
-    runs with: python -B -m activity_planner_basic activity_planning_pddl_domain.pddl activity_planning_pddl_problem.pddl
+    runs with: python -B -m activity_planner_basic pddl_domain.pddl pddl_problem.pddl
 
 activity_planner_best_first: a functioning activity planner using a Best First Search method similar to Pset 2. Cost is calculated by a FF ignorning any delete effects and negative preconditions. However, it currently works worse than the basic BFS since the queue doesn't distinguish well between the many actions that are the same "distance" from the goal. As a result it add superflous actions since they are queued sooner but still accomplish the overall goal. Improvements will either add depth limiting or will change cost function to be a cumulative cost of the path so far by adding up the various actions. Run time is approx 30s
-    runs with: python -B -m activity_planner_best_first activity_planning_pddl_domain.pddl activity_planning_pddl_problem.pddl
+    runs with: python -B -m activity_planner_best_first pddl_domain.pddl pddl_problem.pddl
 
 
 ## Part 2: Motion Planning

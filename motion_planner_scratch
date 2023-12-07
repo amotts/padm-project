@@ -26,3 +26,8 @@ Needs:
     Need step function to find point one step away in direction of sample
     implemented a percentage goal: random percent of the time, select the goal as the sample, increases speed of finding target
         - in simple cartesian, when from 170 nodes explored with %=0.0 to ~50 nodes explored with %=0.33
+
+
+
+Future Thoughts:
+create dictionary of locations and their respective locations and use the second/third/fourth word of input argument to get the targets for each action.

@@ -1,5 +1,5 @@
 ## Create a BFS planner based on the example planner in the pddl_parser library and the Pset 1 informed search BFS implementation
-# python -B -m activity_planner_basic activity_planning_pddl_domain.pddl activity_planning_pddl_problem.pddl
+# python -B -m activity_planner_basic pddl_domain.pddl pddl_problem.pddl
 
 
 ## Future plans - implement best first using Priority Queue w/ cost as the path length to satisfy goal if when we perform action, no negative effects
