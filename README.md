@@ -14,10 +14,10 @@ Notes: Currently, multiple actions are offered that would never be needed and ar
 
 activity_planner_basic: a functional activity planner using a Breadth-First Search method by adding new satisifed actions to the back of the queue. Modeled after the BFS used in pset 1 using syntax from the
 PDDL-parser. Run time is approx 1 sec
-    runs with: python -B -m activity_planner_basic /home/amotts/Documents/MIT_FA23/padm-project/activity_planning_pddl_domain.pddl /home/amotts/Documents/MIT_FA23/padm-project/activity_planning_pddl_problem.pddl
+    runs with: python -B -m activity_planner_basic activity_planning_pddl_domain.pddl activity_planning_pddl_problem.pddl
 
 activity_planner_best_first: a functioning activity planner using a Best First Search method similar to Pset 2. Cost is calculated by a FF ignorning any delete effects and negative preconditions. However, it currently works worse than the basic BFS since the queue doesn't distinguish well between the many actions that are the same "distance" from the goal. As a result it add superflous actions since they are queued sooner but still accomplish the overall goal. Improvements will either add depth limiting or will change cost function to be a cumulative cost of the path so far by adding up the various actions. Run time is approx 30s
-    runs with: python -B -m activity_planner_best_first /home/amotts/Documents/MIT_FA23/padm-project/activity_planning_pddl_domain.pddl /home/amotts/Documents/MIT_FA23/padm-project/activity_planning_pddl_problem.pddl
+    runs with: python -B -m activity_planner_best_first activity_planning_pddl_domain.pddl activity_planning_pddl_problem.pddl
 
 
 ## Part 2: Motion Planning
