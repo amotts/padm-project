@@ -18,3 +18,16 @@ PDDL-parser. Run time is approx 1 sec
 
 activity_planner_best_first: a functioning activity planner using a Best First Search method similar to Pset 2. Cost is calculated by a FF ignorning any delete effects and negative preconditions. However, it currently works worse than the basic BFS since the queue doesn't distinguish well between the many actions that are the same "distance" from the goal. As a result it add superflous actions since they are queued sooner but still accomplish the overall goal. Improvements will either add depth limiting or will change cost function to be a cumulative cost of the path so far by adding up the various actions. Run time is approx 30s
     runs with: python -B -m activity_planner_best_first /home/amotts/Documents/MIT_FA23/padm-project/activity_planning_pddl_domain.pddl /home/amotts/Documents/MIT_FA23/padm-project/activity_planning_pddl_problem.pddl
+
+
+## Part 2: Motion Planning
+
+Did some file reorganization and upkeep. Removed the repository for the padm-project-2023f so the files could be added to my repository. Removed redunadant nestled directories to shorten paths and better allow importing from files and tools provided
+
+motion_planner_scratch: Planning notes, observations, and performance comments about motion planning files and code
+
+motion_planning_v1: Largely copied off of minimal_example.py. Implimented code for basic rrt including rrt nodes and rrt protocol for basic rrt. After testing, decided to include a percentage of samples to be the goal to speed things along. Included optional goal_function to allow for future flexibility in what is considered reaching the goal. Testing in 2D cartesian form showed over a 60% reduction in number of nodes explored to find goal. TO DO: a lot lol but implement the necessary function using the provided functions for the world
+
+tests.py: file for creating test cases to test individual function performance:
+    Contents:
+    - 2D cartesian test for basic RRT
