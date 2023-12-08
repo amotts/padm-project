@@ -18,7 +18,7 @@ from pybullet_tools.utils import CIRCULAR_LIMITS, get_custom_limits, set_joint_p
 from pybullet_tools.ikfast.franka_panda.ik import PANDA_INFO, FRANKA_URDF
 from pybullet_tools.ikfast.ikfast import get_ik_joints, closest_inverse_kinematics
 
-from pybullet_tools.utils import remove_body, get_joint_positions, get_joint_position, get_bodies, get_body_name, quat_from_euler, create_attachment, plan_cartesian_motion, wait_for_duration, draw_pose, dump_body, set_renderer, is_pose_close
+from pybullet_tools.utils import remove_body, get_joint_positions, get_joint_position, get_bodies, get_body_name, quat_from_euler, create_attachment, plan_cartesian_motion, wait_for_duration, draw_pose, dump_body, set_renderer, is_pose_close, set_joint_position
 
 from src.world import World
 from src.utils import JOINT_TEMPLATE, BLOCK_SIZES, BLOCK_COLORS, COUNTERS, \
@@ -57,7 +57,7 @@ def get_sample_fn(body, joints, custom_limits={}, **kwargs):
 #############################################################
 # Movement Functions
 
-def generate_rrt(world, goal, max, percent):
+def generate_rrt(world, goal, drawer = None, open = True, drawer_dist = 0.3, max=200, percent=0.3):
     joints = get_movable_joints(world.robot)
     obstacles = []
     for b in get_bodies():
@@ -76,19 +76,66 @@ def generate_rrt(world, goal, max, percent):
     set_renderer(enable=False) # do not visualize the RRT collision checking
     states = None
     while states == None:
-        # print("[*] Thinking...")
         states = basic_rrt(start, goal, dist_func, step_func, sample_func, collision_func, None, max, percent)
-    #if states is not None:
-        # print("[+] Path found!")
-    #else:
-        # print("[-] RRT failed!")
+    if states is not None:
+        print("[+] Path found!")
+    else:
+        print("[-] RRT failed!")
     # reset initial configuration
     set_joint_positions(world.robot, world.arm_joints, start)
+    set_renderer(enable=True)
+
+    if drawer != None:
+        if open:
+            drawer_steps = np.linspace(0,drawer_dist, len(states))
+        elif not open:
+            drawer_steps = np.linspace(drawer_dist, 0, len(states))
+    i=0
+
+    # execute RRT plan
+    for state in states:
+        set_joint_positions(world.robot, world.arm_joints, state)
+        if drawer != None:
+            set_joint_position(world.kitchen, drawer, drawer_steps[i])
+            i+=1
+        wait_for_duration(1e-1)
+
+def generate_rrt_w_object(world, goal, object, max=200, percent=0.3):
+    joints = get_movable_joints(world.robot)
+    tool_link = link_from_name(world.robot, "panda_hand")
+    obstacles = []
+    for b in get_bodies():
+        if world.robot != b and b!= 3 and b!= 4 and b != 5:
+            obstacles.append(b)
+    dist_func = get_dist_func(world.robot, world.arm_joints)
+    sample_func = get_sample_func(world.robot, world.arm_joints)
+    # step_func not reliant on world and bodies. Already hardcoded
+    collision_func = get_collision_func(world.robot, world.arm_joints, obstacles)
+    goal_func = get_goal_func(world.robot, world.arm_joints)
+
+    # get start configurations
+    start = (get_joint_positions(world.robot, joints))[9:16]
+    initial_object_pose = get_pose(object)
+
+    # perform RRT
+    set_renderer(enable=False) # do not visualize the RRT collision checking
+    states = None
+    while states == None:
+        states = basic_rrt(start, goal, dist_func, step_func, sample_func, collision_func, None, max, percent)
+    if states is not None:
+        print("[+] Path found!")
+    else:
+        print("[-] RRT failed!")
+    # reset initial configuration
+    set_joint_positions(world.robot, world.arm_joints, start)
+    set_pose(object, initial_object_pose)
     set_renderer(enable=True)
 
     # execute RRT plan
     for state in states:
         set_joint_positions(world.robot, world.arm_joints, state)
+        new_pose = get_link_pose(world.robot, tool_link)
+        set_pose(object, new_pose)
         wait_for_duration(1e-1)
 
 
@@ -147,41 +194,53 @@ def main():
     joints = get_movable_joints(world.robot)
     print('Base Joints', [get_joint_name(world.robot, joint) for joint in world.base_joints])
     print('Arm Joints', [get_joint_name(world.robot, joint) for joint in world.arm_joints])
-    sample_fn = get_sample_fn(world.robot, world.arm_joints)
-    print("Going to use IK to go from a sample start state to a goal state\n")
+    initial_position = (get_joint_positions(world.robot, joints))[9:16]
+    # obstacles = []
+    # for b in get_bodies():
+    #     if world.robot != b and b != 3 and b!= 4 and b!= 5 and b!= sugar_box and b!= spam_box:
+    #         obstacles.append(b)
+    #     # obstacles.append(b)
+    # print(obstacles)
 
-    obstacles = []
-    for b in get_bodies():
-        if world.robot != b and b != 3 and b!= 4 and b!= 5 and b!= sugar_box and b!= spam_box:
-            obstacles.append(b)
-        # obstacles.append(b)
-    print(obstacles)
+    # print(world.kitchen_joints)
+    # for joint in world.kitchen_joints:
+    #     print(joint, get_joint_name(world.kitchen, joint))
+    #     if joint == 56:
+    #         drawer_joint = ((joint))
+    # print(drawer_joint)
 
-
-    # for i in range(100):
-    #     goal_pos = translate_linearly(world, 0.01) # does not do any collision checking!!
-    #     set_joint_positions(world.robot, world.base_joints, goal_pos)
-
-
-    #     for obstacle in obstacles:
-    #         # print(get_body_name(obstacle), get_body_name(obstacle))
-    #         if pairwise_collision(world.robot,obstacle): # check if body has hit any obstacles
-    #             print("I hit ", obstacle,get_body_name(obstacle))
-    # #             print(get_body_name(obstacle))
-                
-
-    #     if (i % 30 == 0):
-    #         wait_for_user()
     wait_for_user()
-    # set_joint_positions(world.robot, world.base_joints, [0.75, 0.65, np.pi])
     goal = [0.75, 0.65]
     drive_to(world, goal)
-
     wait_for_user()
-    for task in action_list:
-        goal = goal_pose_dict[task]
-        generate_rrt(world, goal, 2000, 0.3)
-        wait_for_user()
+
+    goal = goal_pose_dict["open_drawer"]
+    generate_rrt(world, goal)
+    wait_for_user()
+    goal = goal_pose_dict["close_drawer"]
+    generate_rrt(world, goal, 56,True)
+    wait_for_user()
+    goal = goal_pose_dict["pick_up_spam"]
+    generate_rrt(world,goal)
+    wait_for_user()
+    goal = goal_pose_dict["place_spam"]
+    generate_rrt_w_object(world, goal, 5)
+    wait_for_user()
+    goal = goal_pose_dict["pick_up_sugar"]
+    generate_rrt(world, goal)
+    wait_for_user
+    goal = goal_pose_dict["place_sugar"]
+    generate_rrt_w_object(world, goal, 4)
+    wait_for_user()
+    generate_rrt(world, initial_position)
+
+
+    
+
+    # for task in action_list:
+    #     goal = goal_pose_dict[task]
+    #     generate_rrt(world, goal, 2000, 0.3)
+    #     wait_for_user()
 
 
 
