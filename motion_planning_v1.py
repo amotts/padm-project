@@ -10,6 +10,7 @@ import ast
 from random import random
 from rrt_functions import *
 from action_planner import get_action_plan
+from global_settings import *
 
 sys.path.extend(os.path.abspath(os.path.join(os.getcwd(), d)) for d in ['pddlstream', 'ss-pybullet'])
 
@@ -26,6 +27,16 @@ from src.utils import JOINT_TEMPLATE, BLOCK_SIZES, BLOCK_COLORS, COUNTERS, \
     ALL_JOINTS, LEFT_CAMERA, CAMERA_MATRIX, CAMERA_POSES, CAMERAS, compute_surface_aabb, \
     BLOCK_TEMPLATE, name_from_type, GRASP_TYPES, SIDE_GRASP, joint_from_name, \
     STOVES, TOP_GRASP, randomize, LEFT_DOOR, point_from_pose, translate_linearly
+
+
+# #default settings for RRT
+MAX_ITER = 200
+PERCENT_GOAL = 0.33
+STEP_SIZE = 0.1
+DRAWER_DIST = 0.3
+OBSTACLES_TO_IGNORE = [3, 4, 5]
+
+
 
 UNIT_POSE2D = (0., 0., 0.)
 
@@ -58,11 +69,12 @@ def get_sample_fn(body, joints, custom_limits={}, **kwargs):
 #############################################################
 # Movement Functions
 
-def generate_rrt(world, goal, drawer = None, open = True, drawer_dist = 0.3, max=200, percent=0.3):
+def generate_rrt(world, goal, object= None, drawer = None, open = True, drawer_dist = DRAWER_DIST, max=MAX_ITER, percent=PERCENT_GOAL):
+    #dummy variable object used to ensure consistency with input to w/object variety
     joints = get_movable_joints(world.robot)
     obstacles = []
     for b in get_bodies():
-        if world.robot != b and b!= 3 and b!= 4 and b != 5:
+        if world.robot != b and b!= 3 and b!= 4 and b!=5: #(b!= ob for ob in OBSTACLES_TO_IGNORE):
             obstacles.append(b)
     dist_func = get_dist_func(world.robot, world.arm_joints)
     sample_func = get_sample_func(world.robot, world.arm_joints)
@@ -78,10 +90,6 @@ def generate_rrt(world, goal, drawer = None, open = True, drawer_dist = 0.3, max
     states = None
     while states == None:
         states = basic_rrt(start, goal, dist_func, step_func, sample_func, collision_func, None, max, percent)
-    if states is not None:
-        print("[+] Path found!")
-    else:
-        print("[-] RRT failed!")
     # reset initial configuration
     set_joint_positions(world.robot, world.arm_joints, start)
     set_renderer(enable=True)
@@ -101,12 +109,12 @@ def generate_rrt(world, goal, drawer = None, open = True, drawer_dist = 0.3, max
             i+=1
         wait_for_duration(1e-1)
 
-def generate_rrt_w_object(world, goal, object, max=200, percent=0.3):
+def generate_rrt_w_object(world, goal, object, max=MAX_ITER, percent=PERCENT_GOAL):
     joints = get_movable_joints(world.robot)
     tool_link = link_from_name(world.robot, "panda_hand")
     obstacles = []
     for b in get_bodies():
-        if world.robot != b and b!= 3 and b!= 4 and b != 5:
+        if world.robot != b and b!= 3 and b!= 4 and b!=5: #(b!= ob for ob in OBSTACLES_TO_IGNORE):
             obstacles.append(b)
     dist_func = get_dist_func(world.robot, world.arm_joints)
     sample_func = get_sample_func(world.robot, world.arm_joints)
@@ -123,10 +131,7 @@ def generate_rrt_w_object(world, goal, object, max=200, percent=0.3):
     states = None
     while states == None:
         states = basic_rrt(start, goal, dist_func, step_func, sample_func, collision_func, None, max, percent)
-    if states is not None:
-        print("[+] Path found!")
-    else:
-        print("[-] RRT failed!")
+
     # reset initial configuration
     set_joint_positions(world.robot, world.arm_joints, start)
     set_pose(object, initial_object_pose)
@@ -177,8 +182,17 @@ goal_pose_dict["close_drawer"]=(0.5561482417440563, -1.0251061869539213, -1.9609
 
 action_list = ["open_drawer","pick_up_sugar", "place_sugar", "pick_up_spam", "place_spam", "close_drawer"]
 
+def blank_func(a=None, b=None,c=None, d=None, e=None):
+    return()
 
+ACTION_FUNCTIONS = dict()
 
+ACTION_FUNCTIONS["open_door"] = generate_rrt
+ACTION_FUNCTIONS["close_door"] = generate_rrt
+ACTION_FUNCTIONS["grab_thing"] = blank_func
+ACTION_FUNCTIONS["release_thing"] = blank_func
+ACTION_FUNCTIONS["move_object"] = generate_rrt_w_object
+ACTION_FUNCTIONS["move_arm"]= generate_rrt
 
 
 
@@ -198,13 +212,27 @@ def main():
     # print('Base Joints', [get_joint_name(world.robot, joint) for joint in world.base_joints])
     # print('Arm Joints', [get_joint_name(world.robot, joint) for joint in world.arm_joints])
     initial_position = (get_joint_positions(world.robot, joints))[9:16]
-   
-
-    action_plan = get_action_plan("activity_planner_basic", "pddl_domain.pddl", "pddl_problem_simple.pddl")
+    
+    goal = [0.75, 0.65]
+    drive_to(world, goal)
+    wait_for_user()
+    
+    action_plan = get_action_plan(PLANNER, DOMAIN, PROBLEM)
     print(action_plan)
+    for action in action_plan:
+        print("Doing: ", action)
+        act = action[0]
+        if act == "open_door":
+            ACTION_FUNCTIONS[act](world, GOAL_POSES[act][action[2]], None, 56, True)
+        elif act == "close_door":
+            ACTION_FUNCTIONS[act](world, GOAL_POSES[act][action[2]], None, DOOR_DICT[action[2]], False)
+        else:
+            ACTION_FUNCTIONS[act](world, GOAL_POSES[act][action[3]], OBJECT_DICT[action[4]])
+        wait_for_user()
+    generate_rrt(world, initial_position)
+    print("ALL TASKS COMPLETE")
 
-
-
+# generate_rrt(world, goal, object, drawer = None, open = True, drawer_dist = DRAWER_DIST, max=MAX_ITER, percent=PERCENT_GOAL):
     # obstacles = []
     # for b in get_bodies():
     #     if world.robot != b and b != 3 and b!= 4 and b!= 5 and b!= sugar_box and b!= spam_box:
@@ -224,11 +252,11 @@ def main():
     # goal = [0.75, 0.65]
     # drive_to(world, goal)
     # wait_for_user()
-    # goal = goal_pose_dict["open_drawer"]
+    goal = goal_pose_dict["open_drawer"]
     # generate_rrt(world, goal)
     # wait_for_user()
     # goal = goal_pose_dict["close_drawer"]
-    # generate_rrt(world, goal, 56,True)
+    # generate_rrt(world, goal, None, 56,True)
     # wait_for_user()
     # goal = goal_pose_dict["pick_up_spam"]
     # generate_rrt(world,goal)

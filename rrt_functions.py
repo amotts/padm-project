@@ -8,6 +8,8 @@ import math
 import subprocess
 import ast
 from random import random
+# from global_settings import *
+# from global_settings import *
 
 sys.path.extend(os.path.abspath(os.path.join(os.getcwd(), d)) for d in ['pddlstream', 'ss-pybullet'])
 
@@ -25,6 +27,13 @@ from src.utils import JOINT_TEMPLATE, BLOCK_SIZES, BLOCK_COLORS, COUNTERS, \
     BLOCK_TEMPLATE, name_from_type, GRASP_TYPES, SIDE_GRASP, joint_from_name, \
     STOVES, TOP_GRASP, randomize, LEFT_DOOR, point_from_pose, translate_linearly
 
+
+# #default settings for RRT
+MAX_ITER = 200
+PERCENT_GOAL = 0.33
+STEP_SIZE = 0.1
+DRAWER_DIST = 0.3
+OBSTACLES_TO_IGNORE = [3, 4, 5]
 
 ######################################################################
 # RRT base code below
@@ -50,7 +59,7 @@ def map_path(nodes):
 
 
 
-def basic_rrt(start, goal, dist_func, step_func, sample_func, collision_func, goal_func, max_steps=500, percent_goal=0.33):
+def basic_rrt(start, goal, dist_func, step_func, sample_func, collision_func, goal_func, max_steps=MAX_ITER, percent_goal=PERCENT_GOAL):
     # Step 1: Check goal and start locations for collisions with obstacles
     if collision_func(goal):
         print("Invalid  Goal")
@@ -85,7 +94,7 @@ def basic_rrt(start, goal, dist_func, step_func, sample_func, collision_func, go
         else:
             if goal_func(sample_step_node._state, goal):
                 # print(len(nodes))
-                print(map_path(sample_step_node.path())  )
+                # print(map_path(sample_step_node.path())  )
                 return map_path(sample_step_node.path())           
         steps_taken += 1
 
@@ -116,12 +125,12 @@ def get_collision_func(body, joints, obstacles):
         set_joint_positions(body, joints, state) #set the position to be at state
         for obstacle in obstacles:
             if pairwise_collision(body,obstacle): # check if body has hit any obstacles
-                print("I hit ", obstacle, get_body_name(obstacle))
+                #print("I hit ", obstacle, get_body_name(obstacle))
                 return True
         return False
     return(func)
 
-def step_func(state1, state2, step_size = 0.1):
+def step_func(state1, state2, step_size = STEP_SIZE):
     #state1 is sample, state2 is closest node
     #linearly scale each component of the vector by the scale factor beyond the step size    
     dist_i = math.sqrt(sum((state1[i]-state2[i])**2 for i in range(len(state1))))

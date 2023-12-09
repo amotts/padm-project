@@ -77,3 +77,13 @@ Kitchen Joints:
 
 
 WTF is a quat? required for many of the built in functions for comparing poses
+
+
+move_arm - robot, from, to
+open_door - robot, to, None
+release_thing -  robot, loc, item
+grab_thing - robot, loc, item
+move_object robot, from, to, 
+
+
+Not all global settings worked = importing on a nother doesnt seem viable Same vitals included in headers of several files. Had to hardcode the obstacles to not count. Kinda messy way of doing it since it requires so many dictionary entries, but it keeps the main code cleaner.

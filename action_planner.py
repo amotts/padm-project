@@ -22,6 +22,8 @@ def get_action_plan(planner, domain, problem):
     plan.pop(0)
     for i in range(len(plan)):
         plan[i] = plan[i].split(" ")
+        while len(plan[i]) < 5:
+            plan[i].append(None)
     return(plan)
 
 def main():
