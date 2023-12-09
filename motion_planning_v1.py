@@ -9,6 +9,7 @@ import subprocess
 import ast
 from random import random
 from rrt_functions import *
+from action_planner import get_action_plan
 
 sys.path.extend(os.path.abspath(os.path.join(os.getcwd(), d)) for d in ['pddlstream', 'ss-pybullet'])
 
@@ -162,6 +163,8 @@ def drive_to(world,goal, step_size = 0.1):
 #####################################################################
 #Actions Planning
 
+
+
 goal_pose_dict = dict()
 
 goal_pose_dict["pick_up_spam"]=(-0.7485783467743256, 0.6000518546809359, 0.1886607294919161, -1.4924298630276667, -0.12165437028136393, 2.081177397934699, 2.6089407853951716)
@@ -192,9 +195,16 @@ def main():
     world._update_initial()
     tool_link = link_from_name(world.robot, 'panda_hand')
     joints = get_movable_joints(world.robot)
-    print('Base Joints', [get_joint_name(world.robot, joint) for joint in world.base_joints])
-    print('Arm Joints', [get_joint_name(world.robot, joint) for joint in world.arm_joints])
+    # print('Base Joints', [get_joint_name(world.robot, joint) for joint in world.base_joints])
+    # print('Arm Joints', [get_joint_name(world.robot, joint) for joint in world.arm_joints])
     initial_position = (get_joint_positions(world.robot, joints))[9:16]
+   
+
+    action_plan = get_action_plan("activity_planner_basic", "pddl_domain.pddl", "pddl_problem_simple.pddl")
+    print(action_plan)
+
+
+
     # obstacles = []
     # for b in get_bodies():
     #     if world.robot != b and b != 3 and b!= 4 and b!= 5 and b!= sugar_box and b!= spam_box:
@@ -209,33 +219,31 @@ def main():
     #         drawer_joint = ((joint))
     # print(drawer_joint)
 
-    wait_for_user()
-    goal = [0.75, 0.65]
-    drive_to(world, goal)
-    wait_for_user()
-
-    goal = goal_pose_dict["open_drawer"]
-    generate_rrt(world, goal)
-    wait_for_user()
-    goal = goal_pose_dict["close_drawer"]
-    generate_rrt(world, goal, 56,True)
-    wait_for_user()
-    goal = goal_pose_dict["pick_up_spam"]
-    generate_rrt(world,goal)
-    wait_for_user()
-    goal = goal_pose_dict["place_spam"]
-    generate_rrt_w_object(world, goal, 5)
-    wait_for_user()
-    goal = goal_pose_dict["pick_up_sugar"]
-    generate_rrt(world, goal)
-    wait_for_user
-    goal = goal_pose_dict["place_sugar"]
-    generate_rrt_w_object(world, goal, 4)
-    wait_for_user()
-    generate_rrt(world, initial_position)
-
-
-    
+    # ##Hardcoded action list##
+    # wait_for_user()
+    # goal = [0.75, 0.65]
+    # drive_to(world, goal)
+    # wait_for_user()
+    # goal = goal_pose_dict["open_drawer"]
+    # generate_rrt(world, goal)
+    # wait_for_user()
+    # goal = goal_pose_dict["close_drawer"]
+    # generate_rrt(world, goal, 56,True)
+    # wait_for_user()
+    # goal = goal_pose_dict["pick_up_spam"]
+    # generate_rrt(world,goal)
+    # wait_for_user()
+    # goal = goal_pose_dict["place_spam"]
+    # generate_rrt_w_object(world, goal, 5)
+    # wait_for_user()
+    # goal = goal_pose_dict["pick_up_sugar"]
+    # generate_rrt(world, goal)
+    # wait_for_user
+    # goal = goal_pose_dict["place_sugar"]
+    # generate_rrt_w_object(world, goal, 4)
+    # wait_for_user()
+    # generate_rrt(world, initial_position)
+    # #####################
 
     # for task in action_list:
     #     goal = goal_pose_dict[task]
@@ -246,37 +254,7 @@ def main():
 
 
     
-    # goal = (-0.7485783467743256, 0.6000518546809359, 0.1886607294919161, -1.4924298630276667, -0.12165437028136393, 2.081177397934699, 2.6089407853951716)
-
-    # generate_rrt(world, goal, 2000, 0.3)
     
-    # wait_for_user()
-    # set_joint_positions(world.robot, world.base_joints, [0.75, 0.65, np.pi])
-    # wait_for_user()
-    # goal = (0.01064202542796632, 1.4, 0.018605815479346265, -0.5, -0.05907068003938907, 3.1, 0.7906325747027143)
-
-    # generate_rrt(world, goal, 2000, 0.3)
-    # wait_for_user()
-    # set_joint_positions(world.robot, world.base_joints, [0, 0.65, np.pi])
-
-    # for i in range(2):
-    #     print('Iteration:', i)
-    #     conf = sample_fn()map_path(sample_step_node.path())  
-    #     set_joint_positions(world.robot, world.arm_joints, conf)
-    #     wait_for_user()
-    #     ik_joints = get_ik_joints(world.robot, PANDA_INFO, tool_link)
-    #     start_pose = get_link_pose(world.robot, tool_link)
-    #     end_pose = multiply(start_pose, Pose(Point(z=1.0)))
-    #     for pose in interpolate_poses(start_pose, end_pose, pos_step_size=0.01):
-    #         conf = next(closest_inverse_kinematics(world.robot, PANDA_INFO, tool_link, pose, max_time=0.05), None)
-    #         if conf is None:
-    #             print('Failure!')
-    #             wait_for_user()
-    #             break
-    #         set_joint_positions(world.robot, ik_joints, conf)
-    print("Going to operate the base without collision checking")
-
-
     wait_for_user()
     world.destroy()
 
