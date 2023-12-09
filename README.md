@@ -30,11 +30,18 @@ Did some file reorganization and upkeep. Removed the repository for the padm-pro
 
 motion_planner_scratch: Planning notes, observations, and performance comments about motion planning files and code
 
-motion_planning_v1: Largely copied off of minimal_example.py. 
+motion_planning_v1: Programmed with ability to drive robot to location, move arm, move arm with held object. Open/close drawer accomplished by adding drawer motion to regular arm motion. Action plan generated from any planner, domain, and problem files inputted in def main().
 
+action_planner.py: contains function to run the python command to execute the planner on the domain and problem. Provides plan as a list. Each list element is a list of the output for that action.
 
 rrt_functions.py: Implimented code for basic rrt including rrt nodes and rrt protocol for basic rrt. After testing, decided to include a percentage of samples to be the goal to speed things along. Included optional goal_function to allow for future flexibility in what is considered reaching the goal. Testing in 2D cartesian form showed over a 60% reduction in number of nodes explored to find goal. necessary functions are written but not tested
 
 tests.py: file for creating test cases to test individual function performance:
     Contents:
     - 2D cartesian test for basic RRT
+
+Shortcomings:
+    - Motion is not smooth for open drawer
+    - poses get messed up when picking up
+    - positions for each object must be hardcoded into dictionaries base on actions
+    - not fully flushed out collision checking for not hitting object when object is held
