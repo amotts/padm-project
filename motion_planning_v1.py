@@ -169,19 +169,6 @@ def drive_to(world,goal, step_size = 0.1):
 #Actions Planning
 
 
-
-goal_pose_dict = dict()
-
-goal_pose_dict["pick_up_spam"]=(-0.7485783467743256, 0.6000518546809359, 0.1886607294919161, -1.4924298630276667, -0.12165437028136393, 2.081177397934699, 2.6089407853951716)
-goal_pose_dict["pick_up_sugar"]=(0.01064202542796632, 1.4, 0.018605815479346265, -0.5, -0.05907068003938907, 3.1, 0.7906325747027143)
-goal_pose_dict["place_sugar"]=(1.880353502615019, -1.348320286822579, -2.0462322486967235, -0.9027585788708357, 0.0898294783293007, 2.654121236088206, -0.5745334436812624)
-goal_pose_dict["open_drawer"]=(1.3468115429378031, -1.1855967232420714, -2.2134869146883633, -1.7960922256926946, -0.2526004518888567, 2.928824959281513, -0.42977342085737813)
-goal_pose_dict["place_spam"]=(1.0693663316413473, -0.9732932697997243, -2.1096123553694426, -2.2952996143893194, -0.2785314178255012, 3.1121042557799767, -0.3822184282329072)
-goal_pose_dict["close_drawer"]=(0.5561482417440563, -1.0251061869539213, -1.9609893323598375, -2.2014717805836304, -0.2589333796789931, 2.6568843331727328, -0.6773986969906863)
-
-
-action_list = ["open_drawer","pick_up_sugar", "place_sugar", "pick_up_spam", "place_spam", "close_drawer"]
-
 def blank_func(a=None, b=None,c=None, d=None, e=None):
     return()
 
@@ -209,8 +196,6 @@ def main():
     world._update_initial()
     tool_link = link_from_name(world.robot, 'panda_hand')
     joints = get_movable_joints(world.robot)
-    # print('Base Joints', [get_joint_name(world.robot, joint) for joint in world.base_joints])
-    # print('Arm Joints', [get_joint_name(world.robot, joint) for joint in world.arm_joints])
     initial_position = (get_joint_positions(world.robot, joints))[9:16]
     
     goal = [0.75, 0.65]
@@ -232,56 +217,6 @@ def main():
     generate_rrt(world, initial_position)
     print("ALL TASKS COMPLETE")
 
-# generate_rrt(world, goal, object, drawer = None, open = True, drawer_dist = DRAWER_DIST, max=MAX_ITER, percent=PERCENT_GOAL):
-    # obstacles = []
-    # for b in get_bodies():
-    #     if world.robot != b and b != 3 and b!= 4 and b!= 5 and b!= sugar_box and b!= spam_box:
-    #         obstacles.append(b)
-    #     # obstacles.append(b)
-    # print(obstacles)
-
-    # print(world.kitchen_joints)
-    # for joint in world.kitchen_joints:
-    #     print(joint, get_joint_name(world.kitchen, joint))
-    #     if joint == 56:
-    #         drawer_joint = ((joint))
-    # print(drawer_joint)
-
-    # ##Hardcoded action list##
-    # wait_for_user()
-    # goal = [0.75, 0.65]
-    # drive_to(world, goal)
-    # wait_for_user()
-    goal = goal_pose_dict["open_drawer"]
-    # generate_rrt(world, goal)
-    # wait_for_user()
-    # goal = goal_pose_dict["close_drawer"]
-    # generate_rrt(world, goal, None, 56,True)
-    # wait_for_user()
-    # goal = goal_pose_dict["pick_up_spam"]
-    # generate_rrt(world,goal)
-    # wait_for_user()
-    # goal = goal_pose_dict["place_spam"]
-    # generate_rrt_w_object(world, goal, 5)
-    # wait_for_user()
-    # goal = goal_pose_dict["pick_up_sugar"]
-    # generate_rrt(world, goal)
-    # wait_for_user
-    # goal = goal_pose_dict["place_sugar"]
-    # generate_rrt_w_object(world, goal, 4)
-    # wait_for_user()
-    # generate_rrt(world, initial_position)
-    # #####################
-
-    # for task in action_list:
-    #     goal = goal_pose_dict[task]
-    #     generate_rrt(world, goal, 2000, 0.3)
-    #     wait_for_user()
-
-
-
-
-    
     
     wait_for_user()
     world.destroy()
