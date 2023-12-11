@@ -173,6 +173,57 @@ The poses of objects is not well managed and jumps when the robot "grips" the ob
 
 `tests.py`: 2D Test case for rrt function
 
+## Part 3: Trajectory Optimization
+**Constraint Programming**
+
+I chose to optimize for the time it takes to make each movement using a first order motion model with velocity constraints. I defined a variable `X` for the 7-D joint space vector for h intervals. `Y` reprsents the 7-D velocity vector for h-1 intervals. `t` represents the length of time for each of the h-1 intervals. The goal was to minimize the sum of all of the time intervals. The constraints I encoded are:
+- the trajectory starts at the start configuration
+- the trajectory ends at the end configuration
+- the velocity of all joints starts and ends at zero
+- the magnitude of joint speeds stays below the maximum speed
+- the distance between position steps is the joint velocity multiplied by the times step
+
+An additional constraint that I would ideally encode would be the distance between any configuration and an obstacle remains above zero. However, due to time constraints, I did not implement.
+
+The full constraint problem is encoded in `trajectory_optimization_time.py` can be posed as:
+
+$$
+\begin{aligned}
+\min_{i} \text{ } \text{ } \Sigma t_i \\
+\text{subject to } \text{ } \text{ } &X(i+1)=X(i)+Y(i)*t(i), \\
+&X(0) = Start, \\
+&X(h) = Goal, \\
+&Y(0) = 0, \\
+&Y(h) = 0, \\
+&\forall i, \text{} 0 \leq t(i) \leq 0.1, \\ 
+&\forall t, \text{ } |Y(i)| \leq Y_{max}
+\end{aligned}
+$$
+
+**Solving and Results**
+
+I used the built in Solve function from pydrake which selects the best solver after analyzing the constraints. In this case, it was `SNOPT`The solution of the `X` is converted into a list of configurations and the solution to `t` converted to a list of time step durations. I visualized the motion pathway using the same procedure as the RRT path except using the corresponding time step duration. I tested the motion on the arm movement from initial position to the drawer handle. The resulting motion path is significantly smoother and has far less shaking and rapid direction changes.
+
+In `optimization_comparison.mp4`, the first trajectory to the drawer and back is with the constraint programming trajectory and the second is the RRT path from part2.
+
+[![](https://github.com/amotts/padm-project/blob/main/optimization_comparison.png?raw=true)](https://drive.google.com/file/d/1gKbFvQdC6JEknKC0AvnA60UxVthJSov_/view?usp=sharing "Trajectory Comparison")
+
+or at [this link](https://drive.google.com/file/d/1gKbFvQdC6JEknKC0AvnA60UxVthJSov_/view?usp=sharing)
+
+**Files**
+
+`trajectory_optimization_scratch`: Planning notes, observations, and performance comments about trajectory optimization files and code
+
+`trajectory_optimization_time.py`: A function to run a constraint problem encoded in pydrake as a `MathematicalProgram` with the above constraints
+
+'trajectory_optimization_test.py`: modidified version of `motion_planning_v1` which runs the trajectory to and from the drawer first with the optimized solver and then with the original RRT method
+
+
+
+
+
+
+
 
 
 
