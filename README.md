@@ -216,12 +216,21 @@ or at [this link](https://drive.google.com/file/d/1gKbFvQdC6JEknKC0AvnA60UxVthJS
 
 `trajectory_optimization_time.py`: A function to run a constraint problem encoded in pydrake as a `MathematicalProgram` with the above constraints
 
-'trajectory_optimization_test.py`: modidified version of `motion_planning_v1` which runs the trajectory to and from the drawer first with the optimized solver and then with the original RRT method
+`trajectory_optimization_test.py`: modidified version of `motion_planning_v1` which runs the trajectory to and from the drawer first with the optimized solver and then with the original RRT method
 
 
+## Conclusion
+This project has been an incredibly useful application of the concepts presented in class and briefly outlilned in the course psets. I was at first very confused and lost on where to even start, but over the course of this project I have gotten signifcantly more comfortable not only with the actual concepts of PDDL, Best First, RRT, Linear Programming, but also and most applicably with integrating existing libraries for simulation, modeling, and solving problems. I got experience learning how to read documentation and sort through libaries to find the key files and function. These skills I can carry over to my own research into marine vehicle autonomy.
 
+A common difficulty throuhgout the project was dealing with the 7-dimensional joint space and being unable to easily mentally visualize the corresponding configuration space. Additionally, I struggled with poses of objects and did not completly suceed in maintaining the correct poses on during object motion in the motion planning. Part of what I learned was how to use "get_function" functions and use functions as inputs to other functions, allowing the same method and code to be applied in simpler test cases before expanding to higher degrees (e.g. `tests.py`).
 
+### Resources Used
 
+I completed this project on my own without a partner. I used refernce code and information gained from many sources including:
+* Provided Project Repo Documentation
+* Course Lectures and Psets
+* Github repository from Pascal Spino and William Mitchell
+* Pydrake documentation and tutorials
 
 
 
