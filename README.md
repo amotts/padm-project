@@ -151,9 +151,9 @@ Press enter to continue
 ALL TASKS COMPLETE
 ```
 A videp of the full sequence can be seen in `motion_planning_complete.mp4`
-[![(https://drive.google.com/file/d/1LlSrEiJIvaCDPfBZ9X3fM3aL-iSGCcdk)](https://drive.google.com/file/d/1dpdtQMHbkYcIUfeZOTTVPraVkIlcMxXq/view?usp=sharing "Video Title")
+[![](https://github.com/amotts/padm-project/blob/main/motion_planning.png?raw=true)](https://drive.google.com/file/d/1dpdtQMHbkYcIUfeZOTTVPraVkIlcMxXq/view?usp=sharing "Video Title")
 
-https://drive.google.com/file/d/1dpdtQMHbkYcIUfeZOTTVPraVkIlcMxXq/view?usp=sharing
+or at [this link](https://drive.google.com/file/d/1dpdtQMHbkYcIUfeZOTTVPraVkIlcMxXq/view?usp=sharing)
 
 The poses of objects is not well managed and jumps when the robot "grips" the object. Similarly, the pose when released stays at whatever positions it was in the manipulator and is not subject to gravity to set it down flat. In the future, an additional function to set the pose of the objects when picked up and released would alleviate this. As mentioned above, the drawer opening motion has been hardcoded and is not smooth. A link between the drawer and the effector could reduce this, however to obey the motion laws of the drawer, the arm would need to move in a straight line in configuration space.
 
