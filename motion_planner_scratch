@@ -2,7 +2,7 @@ Needs:
 
 Credit for reference: Pascal Spino and William B Mitchell
 
-In 6 Degree joint space. Can used euclidean geometry in 6 dof space. Will NOT mean linear or even necessarily good movement in end-effector space, but for simplicity, will use joint space only and real world be dammned
+In 6 Degree joint space. Can used euclidean geometry in 7 dof space. Will NOT mean linear or even necessarily good movement in end-effector space, but for simplicity, will use joint space only and real world be dammned
 
 - RRT
     - accept a start, goal
