@@ -2,7 +2,7 @@ Needs:
 
 Credit for reference: Pascal Spino and William B Mitchell
 
-In 6 Degree configuration space. Can used euclidean geometry in 6 dof space. Will NOT mean linear or even necessarily good movement in end-effector space, but for simplicity, will use configuration space only and real world be dammned
+In 6 Degree joint space. Can used euclidean geometry in 6 dof space. Will NOT mean linear or even necessarily good movement in end-effector space, but for simplicity, will use joint space only and real world be dammned
 
 - RRT
     - accept a start, goal
@@ -87,3 +87,31 @@ move_object robot, from, to,
 
 
 Not all global settings worked = importing on a nother doesnt seem viable Same vitals included in headers of several files. Had to hardcode the obstacles to not count. Kinda messy way of doing it since it requires so many dictionary entries, but it keeps the main code cleaner.
+
+
+
+# ##Hardcoded action list##
+    # wait_for_user()
+    # goal = [0.75, 0.65]
+    # drive_to(world, goal)
+    # wait_for_user()
+    # goal = goal_pose_dict["open_drawer"]
+    # generate_rrt(world, goal)
+    # wait_for_user()
+    # goal = goal_pose_dict["close_drawer"]
+    # generate_rrt(world, goal, None, 56,True)
+    # wait_for_user()
+    # goal = goal_pose_dict["pick_up_spam"]
+    # generate_rrt(world,goal)
+    # wait_for_user()
+    # goal = goal_pose_dict["place_spam"]
+    # generate_rrt_w_object(world, goal, 5)
+    # wait_for_user()
+    # goal = goal_pose_dict["pick_up_sugar"]
+    # generate_rrt(world, goal)
+    # wait_for_user
+    # goal = goal_pose_dict["place_sugar"]
+    # generate_rrt_w_object(world, goal, 4)
+    # wait_for_user()
+    # generate_rrt(world, initial_position)
+    # #####################

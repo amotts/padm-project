@@ -14,15 +14,7 @@
         (gripper-loc ?g - gripper ?l - location)
         (item-held ?g - gripper ?t - thing)
         (gripper-occupied ?g - gripper)
-;        (test ?g - gripper)
     )
-
-;    (:action TEST
-;        :parameters (?g - gripper)
-;        :precondition (test ?g)
-;        :effect (not (test ?g))
-;    )
-
 
     (:action OPEN_DOOR
         :parameters (?g - gripper ?l - location)

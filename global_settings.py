@@ -1,17 +1,13 @@
-from motion_planning_v1 import *
+# from motion_planning_v1 import *
+from motion_planning_v2 import *
+
 from rrt_functions import *
 
 
 
-#default settings for RRT
-MAX_ITER = 200
-PERCENT_GOAL = 0.33
-STEP_SIZE = 0.1
-DRAWER_DIST = 0.3
-OBSTACLES_TO_IGNORE = [3, 4, 5]
 
 #World Setup Settings
-PLANNER = "activity_planner_basic"
+PLANNER = "activity_planner_best_first"
 DOMAIN = "pddl_domain.pddl"
 PROBLEM = "pddl_problem_simple.pddl"
 
@@ -24,19 +20,19 @@ def blank_func(a=None, b=None,c=None, d=None, e=None):
     return()
 
 ACTION_FUNCTIONS = dict()
-
+# Functions to call for each action in the activity plan
 ACTION_FUNCTIONS["open_door"] = generate_rrt
 ACTION_FUNCTIONS["close_door"] = generate_rrt
 ACTION_FUNCTIONS["grab_thing"] = blank_func
 ACTION_FUNCTIONS["release_thing"] = blank_func
-ACTION_FUNCTIONS["move_object"] = generate_rrt_w_object
+ACTION_FUNCTIONS["move_object"] = generate_rrt # generate_rrt_w_object
 ACTION_FUNCTIONS["move_arm"]= generate_rrt
 
 
 GOAL_POSES = dict()
 for act in action_list:
     GOAL_POSES[act]=dict()
-
+# Goal pose for each action at a certain location via nested dictionaries
 
 GOAL_POSES["open_door"]["drawer"] = (0.5561482417440563, -1.0251061869539213, -1.9609893323598375, -2.2014717805836304, -0.2589333796789931, 2.6568843331727328, -0.6773986969906863)
 
@@ -56,10 +52,12 @@ GOAL_POSES["release_thing"]["sugar"] = None
 
 
 OBJECT_DICT = dict()
+# corresponding object integer lables to plan output strings
 OBJECT_DICT["spam"]= 5
 OBJECT_DICT["sugar"] = 4
 OBJECT_DICT[None]= None
 
 DOOR_DICT=dict()
+# corresponding door integer lables to plan output strings
 DOOR_DICT["drawer"] = 56
 DOOR_DICT[None] = None

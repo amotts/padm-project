@@ -15,7 +15,7 @@ from rrt_functions import *
 def get_action_plan(planner, domain, problem):
     cmd = ['python', '-B', '-m', planner, domain, problem]
     result = subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode('utf-8')
-    print(result, type(result))
+    print(result)
 
     plan = result.splitlines()
     plan.pop(0)

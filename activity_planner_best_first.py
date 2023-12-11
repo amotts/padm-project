@@ -91,7 +91,7 @@ class Planner:
                             return complete_path
                         visited.add(new_state)
                         queue.put((cost, [new_state, (action, path)]))
-                        print(cost)
+                        # print(cost)
                         
         return(None)
 

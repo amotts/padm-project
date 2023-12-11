@@ -140,10 +140,10 @@ def step_func(state1, state2, step_size = STEP_SIZE):
     else:
         return(state1)
 
-def get_goal_func(body, joints):
-    def func(pose, goal):
-        return(is_pose_close(pose, goal))
-    return(func)
+# def get_goal_func(body, joints):
+#     def func(pose, goal):
+#         return(is_pose_close(pose, goal))
+#     return(func)
 
 
 
